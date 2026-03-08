@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-PalestraApplication<palestra>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.oryzent.palestra.PalestraApplication",
+            "projectName": "palestra",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
