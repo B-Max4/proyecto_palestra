@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.oryzent.palestra.servicios.atleta_service;
 import com.oryzent.palestra.DTOs.atleta_DTO;
+import java.util.List;
 
 @RestController
 @RequestMapping("/atleta")
@@ -18,6 +19,11 @@ public class atleta_controller {
 
     @Autowired
     private atleta_service atleta_service;
+
+    @GetMapping("/all")
+    public List<atleta_DTO> getAllAtletas() {
+        return atleta_service.getAllAtletas();
+    }
 
     @PostMapping("/save")
     public atleta_DTO saveAtleta(@RequestBody atleta_DTO atleta) {

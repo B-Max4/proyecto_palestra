@@ -1,5 +1,7 @@
 package com.oryzent.palestra.servicios.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.oryzent.palestra.repositorios.atleta_repository;
@@ -42,5 +44,10 @@ public class atleta_serviceImpl implements atleta_service {
     @Override
     public void deleteAtleta(Long id) {
         atleta_repository.deleteById(id);
+    }
+
+    @Override
+    public List<atleta_DTO> getAllAtletas() {
+        return atleta_mapper.toDTOList(atleta_repository.findAll());
     }
 }
