@@ -42,7 +42,7 @@ public class resultados_entity {
     private double total_acumulado;
 
     @ManyToOne
-    @JoinColumn(name = "id_atleta")
+    @JoinColumn(name = "id_atleta", nullable = false)
     private atleta_entity atleta;
 
 }

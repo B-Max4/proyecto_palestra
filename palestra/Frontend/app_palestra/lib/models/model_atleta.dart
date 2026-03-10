@@ -1,19 +1,37 @@
+import 'package:app_palestra/models/model_resultado.dart';
+
 class ModelAtleta {
-  int? id;
-  String? categoria;
-  String? name;
+  final int? id;
+  String categoria;
+  String name;
+  List<ModelResultado>? resultados;
 
-  ModelAtleta({this.id, this.categoria, this.name});
+  ModelAtleta({
+    this.id,
+    required this.categoria,
+    required this.name,
+    this.resultados,
+  });
+  factory ModelAtleta.fromJson(Map<String, dynamic> json) {
+    var listaResultados = json['resultados'] as List? ?? [];
+    List<ModelResultado> resultadosConvertidos = listaResultados
+        .map((e) => ModelResultado.fromJson(e))
+        .toList();
 
-  factory ModelAtleta.fromJson(Map<String, dynamic> json) => ModelAtleta(
-    id: json['id'],
-    categoria: json['categoria'],
-    name: json['name'],
-  );
+    return ModelAtleta(
+      id: json['id'],
+      categoria: json['categoria'] ?? '',
+      name: json['name'] ?? '',
+      resultados: resultadosConvertidos,
+    );
+  }
 
-  Map<String, dynamic> toJson() => {
-    'id': id,
-    'categoria': categoria,
-    'name': name,
-  };
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'categoria': categoria,
+      'name': name,
+      'resultados': resultados?.map((e) => e.toJson()).toList(),
+    };
+  }
 }

@@ -33,10 +33,20 @@ public class resultados_serviceImpl implements resultados_service {
 
     @Override
     public resultados_DTO updateResultados(Long id, resultados_DTO resultados) {
-        resultados_entity resultados_entity = resultados_mapper.toEntity(resultados);
-        resultados_entity.setId(id);
-        resultados_repository.save(resultados_entity);
-        return resultados_mapper.toDTO(resultados_entity);
+
+        resultados_entity resultadoExistente = resultados_repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Resultado no encontrado"));
+
+        // actualizar campos
+        resultadoExistente.setPts_boulder(resultados.getPts_boulder());
+        resultadoExistente.setPts_lead(resultados.getPts_lead());
+        resultadoExistente.setPts_speed_calc(resultados.getPts_speed_calc());
+        resultadoExistente.setTiempo_speed(resultados.getTiempo_speed());
+        resultadoExistente.setTotal_acumulado(resultados.getTotal_acumulado());
+
+        resultados_repository.save(resultadoExistente);
+
+        return resultados_mapper.toDTO(resultadoExistente);
     }
 
     @Override
