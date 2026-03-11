@@ -18,7 +18,7 @@ class ModelResultado {
   });
 
   factory ModelResultado.fromJson(Map<String, dynamic> json) => ModelResultado(
-    id: json['id'],
+    id: json['id'] == null ? null : json['id'],
     pts_boulder: (json['pts_boulder'] ?? 0).toDouble(),
     pts_lead: (json['pts_lead'] ?? 0).toDouble(),
     pts_speed_calc: (json['pts_speed_calc'] ?? 0).toDouble(),
@@ -34,6 +34,7 @@ class ModelResultado {
     'pts_speed_calc': pts_speed_calc,
     'tiempo_speed': tiempo_speed,
     'total_acumulado': total_acumulado,
-    'atleta': {"id": id_atleta},
+    'id_atleta': id_atleta,
+    // 'atleta': {"id": id_atleta},
   };
 }

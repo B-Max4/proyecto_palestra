@@ -1,6 +1,6 @@
-import 'package:app_palestra/models/model_resultado.dart';
 import 'package:flutter/material.dart';
 import 'package:app_palestra/models/model_atleta.dart';
+import 'package:app_palestra/models/model_resultado.dart';
 import 'package:app_palestra/services/service_resultados.dart';
 
 class ScreenResultados extends StatefulWidget {
@@ -14,49 +14,6 @@ class ScreenResultados extends StatefulWidget {
 
 class _ScreenResultadosState extends State<ScreenResultados> {
   final _formKey = GlobalKey<FormState>();
-
-  void _eliminarResultado(int index) {
-    setState(() {
-      widget.atleta.resultados!.removeAt(index);
-    });
-  }
-
-  Future<void> _guardarResultados() async {
-    if (_formKey.currentState!.validate()) {
-      bool ok = true;
-
-      for (var resultado in widget.atleta.resultados!) {
-        resultado.id_atleta = widget.atleta.id;
-
-        bool guardado;
-
-        if (resultado.id == null) {
-          guardado = await crearResultado(resultado);
-        } else {
-          guardado = await actualizarResultado(resultado);
-        }
-
-        if (!guardado) {
-          ok = false;
-          break;
-        }
-      }
-
-      if (!mounted) return;
-
-      if (ok) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('Resultados guardados')));
-
-        Navigator.pop(context, true);
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Error al guardar resultados')),
-        );
-      }
-    }
-  }
 
   void _agregarResultado() {
     setState(() {
@@ -73,31 +30,54 @@ class _ScreenResultadosState extends State<ScreenResultados> {
     });
   }
 
+  void _eliminarResultado(int index) {
+    setState(() {
+      widget.atleta.resultados!.removeAt(index);
+    });
+  }
+
+  Future<void> _guardarResultados() async {
+    print("boton guardar presionado");
+
+    bool ok = true;
+
+    for (var resultado in widget.atleta.resultados!) {
+      resultado.id_atleta = widget.atleta.id;
+
+      bool guardado;
+
+      if (resultado.id == null) {
+        print("Creando resultado nuevo");
+        guardado = await crearResultado(resultado);
+      } else {
+        print("Actualizando resultado ${resultado.id}");
+        guardado = await actualizarResultado(resultado);
+      }
+
+      if (!guardado) {
+        ok = false;
+        break;
+      }
+    }
+
+    if (ok) {
+      print("Todos los resultados guardados");
+      Navigator.pop(context, true);
+    } else {
+      print("Error guardando resultados");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final atleta = widget.atleta;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Resultados: ${atleta.name}'),
+        title: Text("Resultados: ${atleta.name}"),
         centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.person),
-            onPressed: () async {
-              final actualizado = await Navigator.pushNamed(
-                context,
-                '/editar_atleta',
-                arguments: atleta,
-              );
-
-              if (actualizado == true) {
-                Navigator.pop(context, true);
-              }
-            },
-          ),
-        ],
       ),
+
       body: Form(
         key: _formKey,
         child: ListView.builder(
@@ -112,22 +92,23 @@ class _ScreenResultadosState extends State<ScreenResultados> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
+
               child: Padding(
-                padding: const EdgeInsets.all(12.0),
+                padding: const EdgeInsets.all(12),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    /// HEADER CON BOTÓN ALINEADO
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Resultado ${index + 1}',
+                          "Resultado ${index + 1}",
                           style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        const Spacer(),
+
                         IconButton(
                           icon: const Icon(Icons.delete, color: Colors.red),
                           onPressed: () => _eliminarResultado(index),
@@ -135,57 +116,58 @@ class _ScreenResultadosState extends State<ScreenResultados> {
                       ],
                     ),
 
-                    /// Boulder
                     TextFormField(
                       initialValue: resultado.pts_boulder.toString(),
                       keyboardType: TextInputType.number,
                       decoration: const InputDecoration(
-                        labelText: 'Puntos Boulder',
+                        labelText: "Puntos Boulder",
                       ),
-                      onChanged: (value) =>
-                          resultado.pts_boulder = double.tryParse(value) ?? 0,
+                      onChanged: (value) {
+                        resultado.pts_boulder = double.tryParse(value) ?? 0;
+                      },
                     ),
 
-                    /// Lead
                     TextFormField(
                       initialValue: resultado.pts_lead.toString(),
                       keyboardType: TextInputType.number,
                       decoration: const InputDecoration(
-                        labelText: 'Puntos Lead',
+                        labelText: "Puntos Lead",
                       ),
-                      onChanged: (value) =>
-                          resultado.pts_lead = double.tryParse(value) ?? 0,
+                      onChanged: (value) {
+                        resultado.pts_lead = double.tryParse(value) ?? 0;
+                      },
                     ),
 
-                    /// Speed Calc
                     TextFormField(
                       initialValue: resultado.pts_speed_calc.toString(),
                       keyboardType: TextInputType.number,
                       decoration: const InputDecoration(
-                        labelText: 'Puntos Speed Calc',
+                        labelText: "Puntos Speed Calc",
                       ),
-                      onChanged: (value) => resultado.pts_speed_calc =
-                          double.tryParse(value) ?? 0,
+                      onChanged: (value) {
+                        resultado.pts_speed_calc = double.tryParse(value) ?? 0;
+                      },
                     ),
 
-                    /// Tiempo Speed
                     TextFormField(
                       initialValue: resultado.tiempo_speed,
                       decoration: const InputDecoration(
-                        labelText: 'Tiempo Speed (hh:mm:ss)',
+                        labelText: "Tiempo Speed (hh:mm:ss)",
                       ),
-                      onChanged: (value) => resultado.tiempo_speed = value,
+                      onChanged: (value) {
+                        resultado.tiempo_speed = value;
+                      },
                     ),
 
-                    /// Total acumulado
                     TextFormField(
                       initialValue: resultado.total_acumulado.toString(),
                       keyboardType: TextInputType.number,
                       decoration: const InputDecoration(
-                        labelText: 'Total Acumulado',
+                        labelText: "Total Acumulado",
                       ),
-                      onChanged: (value) => resultado.total_acumulado =
-                          double.tryParse(value) ?? 0,
+                      onChanged: (value) {
+                        resultado.total_acumulado = double.tryParse(value) ?? 0;
+                      },
                     ),
                   ],
                 ),
@@ -203,7 +185,9 @@ class _ScreenResultadosState extends State<ScreenResultados> {
             child: const Icon(Icons.add),
             onPressed: _agregarResultado,
           ),
+
           const SizedBox(height: 12),
+
           FloatingActionButton(
             heroTag: "save",
             backgroundColor: Colors.green,

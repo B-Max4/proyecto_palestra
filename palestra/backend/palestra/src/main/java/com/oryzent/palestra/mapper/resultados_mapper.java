@@ -10,10 +10,10 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface resultados_mapper {
 
-    @Mapping(target = "atleta", source = "atleta_id")
+    @Mapping(target = "atleta", source = "id_atleta")
     resultados_entity toEntity(resultados_DTO dto);
 
-    @Mapping(target = "atleta_id", source = "atleta.id")
+    @Mapping(target = "id_atleta", source = "atleta.id")
     resultados_DTO toDTO(resultados_entity entity);
 
     List<resultados_entity> toEntityList(List<resultados_DTO> dtos);

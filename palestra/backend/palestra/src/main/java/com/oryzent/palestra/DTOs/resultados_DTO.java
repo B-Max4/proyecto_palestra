@@ -19,6 +19,6 @@ public class resultados_DTO {
     private LocalTime tiempo_speed;
     private double pts_speed_calc;
     private double total_acumulado;
-    private Long atleta_id;
+    private Long id_atleta;
 
 }

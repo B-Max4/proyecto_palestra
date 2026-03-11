@@ -6,7 +6,9 @@ import com.oryzent.palestra.repositorios.resultados_repository;
 import com.oryzent.palestra.mapper.resultados_mapper;
 import com.oryzent.palestra.servicios.resultados_service;
 import com.oryzent.palestra.DTOs.resultados_DTO;
+import com.oryzent.palestra.entidades.atleta_entity;
 import com.oryzent.palestra.entidades.resultados_entity;
+import com.oryzent.palestra.repositorios.atleta_repository;
 
 @Service
 public class resultados_serviceImpl implements resultados_service {
@@ -15,13 +17,37 @@ public class resultados_serviceImpl implements resultados_service {
     private resultados_repository resultados_repository;
 
     @Autowired
+    private atleta_repository atleta_repository;
+
+    @Autowired
     private resultados_mapper resultados_mapper;
 
+    // @Override
+    // public resultados_DTO saveResultados(resultados_DTO resultados) {
+    // resultados_entity resultados_entity = resultados_mapper.toEntity(resultados);
+    // resultados_repository.save(resultados_entity);
+    // return resultados_mapper.toDTO(resultados_entity);
+    // }
     @Override
     public resultados_DTO saveResultados(resultados_DTO resultados) {
-        resultados_entity resultados_entity = resultados_mapper.toEntity(resultados);
-        resultados_repository.save(resultados_entity);
-        return resultados_mapper.toDTO(resultados_entity);
+
+        // 1. Convertimos los campos básicos (puntos, tiempo) del DTO a la Entidad
+        resultados_entity entity = resultados_mapper.toEntity(resultados);
+
+        // 2. Usamos el DTO para obtener el ID y buscar al atleta en la BD
+        // Nota: Usamos getAtleta_id() porque así se llama tu variable en el DTO
+        atleta_entity atleta = atleta_repository
+                .findById(resultados.getId_atleta())
+                .orElseThrow(() -> new RuntimeException("Atleta no encontrado"));
+
+        // 3. Le "inyectamos" el atleta real a la entidad antes de guardar
+        entity.setAtleta(atleta);
+
+        // 4. Guardamos
+        resultados_repository.save(entity);
+
+        // 5. Devolvemos el DTO actualizado (por si el ID de la entidad se generó ahora)
+        return resultados_mapper.toDTO(entity);
     }
 
     @Override
